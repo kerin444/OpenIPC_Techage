@@ -1,66 +1,62 @@
 #!/bin/sh
-
+#       ███╗   ███╗ ██████╗ ████████╗██╗ ██████╗ ███╗   ██╗
+#       ████╗ ████║██╔═══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║
+#       ██╔████╔██║██║   ██║   ██║   ██║██║   ██║██╔██╗ ██║
+#       ██║╚██╔╝██║██║   ██║   ██║   ██║██║   ██║██║╚██╗██║
+#       ██║ ╚═╝ ██║╚██████╔╝   ██║   ██║╚██████╔╝██║ ╚████║
+#       ╚═╝     ╚═╝ ╚═════╝    ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+                                                   
+##################################################################
 ## Configuration
-pollingInterval=15
-pid_file="/var/run/motion.pid"
+pollingInterval=30
+pid_file_motion="/var/run/motion.pid"
+pid_file_night="/var/run/night_mode.pid"
 led_gpio=4
 
-## Functions
-function turn_on_led ()
-{
-    [ ! -f /sys/class/gpio/export ] && exit
-    [ ! -d /sys/class/gpio/gpio${led_gpio} ] && echo ${led_gpio} >/sys/class/gpio/export
-    [ -f /sys/class/gpio/gpio${led_gpio}/direction ] && echo out >/sys/class/gpio/gpio${led_gpio}/direction
-    [ -f /sys/class/gpio/gpio${led_gpio}/value ] && echo 1 >/sys/class/gpio/gpio${led_gpio}/value
-    sleep 1
-}
+# Debug log messages (use 'logread -f')
+DEBUG=1         # Set to 1 or 0 to ensable or disable
 
-function turn_off_led ()
-{
-    [ ! -f /sys/class/gpio/export ] && exit
-    [ ! -d /sys/class/gpio/gpio${led_gpio} ] && echo ${led_gpio} >/sys/class/gpio/export
-    [ -f /sys/class/gpio/gpio${led_gpio}/direction ] && echo out >/sys/class/gpio/gpio${led_gpio}/direction
-    [ -f /sys/class/gpio/gpio${led_gpio}/value ] && echo 0 >/sys/class/gpio/gpio${led_gpio}/value
-    sleep 1
-}
 
-function get_led_status ()
-{
-    [ ! -f /sys/class/gpio/export ] && exit
-    [ ! -d /sys/class/gpio/gpio${led_gpio} ] && echo ${led_gpio} >/sys/class/gpio/export
-    [ -f /sys/class/gpio/gpio${led_gpio}/direction ] && echo out >/sys/class/gpio/gpio${led_gpio}/direction
-    echo $(cat /sys/class/gpio/gpio${led_gpio}/value)
-}
-
-## Prepare
-echo 1>$pid_file
-night_enabled=$(curl -s http://localhost/metrics | awk '/^night_enabled/ {print $2}' | grep . || echo 0)
-led_on=$(get_led_status)
-
+##################################################################
 ## Start Script
-# Turn ON LEDs if night mode is ON and LEDs are OFF
-if [ $night_enabled -eq 1 ] && [ $led_on -eq 0 ]; then
-       turn_on_led
-       logger "Motion started    /    Night Mode=$night_enabled     /     LED=$led_on"
+
+# Check if motion has been triggered by changing night mode (2 sec)
+if [ -f "$pid_file_night" ]; then
+    LAST_NIGHT=$(stat -c %Y "$pid_file_night")
+    CURRENT_TIME=$(date +%s)
+    DIFF=$((CURRENT_TIME - LAST_NIGHT))
+    # If night mode has been changed since less than 2 secs
+    if [ "$DIFF" -gt 2 ]; then
+        # Start motion
+        echo "1" > $pid_file_motion
+
+        [ "$DEBUG" -eq 1 ] && logger "MOTION    : Started ($DIFF sec)"
+
+        # Turn on LEDs if night mode is on and LEDs are off
+        if [[ -f $pid_file_night ]] && grep -q '^1$' $pid_file_night && [ $(gpio read ${led_gpio}) -eq 0 ]; then
+            $(gpio set ${led_gpio})
+            [ "$DEBUG" -eq 1 ] && logger "MOTION    : Turn on LEDs by motion"
+        fi
+    else
+        [ "$DEBUG" -eq 1 ] && logger "MOTION    : Motiong triggered by changing night mode during last $DIFF sec -> Not started"
+    fi
+else
+    echo "1" > $pid_file_motion
+    [ "$DEBUG" -eq 1 ] && logger "MOTION    : Started (no night PID file : $pid_file_night)"
 fi
-# Wait
+
 sleep $pollingInterval
 # Check if PID file exists and check when it was modified
-if [ -f "$pid_file" ]; then
+if [ -f "$pid_file_motion" ]; then
     sleep 1
-    LAST_MOD=$(stat -c %Y "$pid_file")
+    LAST_MOTION=$(stat -c %Y "$pid_file_motion")
     CURRENT_TIME=$(date +%s)
-    DIFF=$((CURRENT_TIME - LAST_MOD))
-    led_on=$(get_led_status)
+    DIFF=$((CURRENT_TIME - LAST_MOTION))
 
     # If file is older than waiting time, it means no new motion has been detected
     if [ "$DIFF" -gt "$pollingInterval" ]; then
-        # If LEDs are ON at the end of motion, turn them OFF
-        if [ $led_on -eq 1 ]; then
-            logger "Motion end (15s)    /    Night Mode=$night_enabled    /    LED=$led_on ... Turning LEDs off"
-            turn_off_led
-        fi
-        # Remove PID file
-        rm "$pid_file"
+        # Remove PID file to end motion
+        rm "$pid_file_motion"
+        [ "$DEBUG" -eq 1 ] && logger "MOTION    : Ended"
     fi
 fi
