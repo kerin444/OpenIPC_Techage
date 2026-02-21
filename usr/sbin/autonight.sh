@@ -121,6 +121,7 @@ while true; do
     # Init GPIO Pin to export (mandatory to work with 'gpio' command)
     [ ! -f /sys/class/gpio/export ] && exit
     [ ! -d /sys/class/gpio/gpio${led_gpio} ] && echo ${led_gpio} >/sys/class/gpio/export
+    [ -f /sys/class/gpio/gpio${led_gpio}/direction ] && ! grep -q '^out$' /sys/class/gpio/gpio${led_gpio}/direction && echo out >/sys/class/gpio/gpio${led_gpio}/direction
 
     # Get metrics to fetch isp_again and nigh_enabled values
     metrics=$(curl -s http://localhost/metrics)

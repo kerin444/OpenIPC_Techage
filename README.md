@@ -78,39 +78,4 @@ When DEBUG is enabled, use the logread to monitor events:
 ```
 # logread -f
 ```
-Monitor ISP_AGAIN, Night Mode, Motion and LEDs using the script:
-```
-#!/bin/sh
-
-##################################################################
-## Configuration
-again_high_target=14000
-again_low_target=1500
-pid_file_motion="/var/run/motion.pid"
-pid_file_night="/var/run/night_mode.pid"
-led_gpio=4
-
-[ ! -f /sys/class/gpio/export ] && exit
-[ ! -d /sys/class/gpio/gpio${led_gpio} ] && echo ${led_gpio} >/sys/class/gpio/export
-
-while true; do
-    metrics=$(curl -s http://localhost/metrics)
-    isp_again=$(echo "${metrics}" | awk '/^isp_again/ {print $2}' | grep .)
-
-    if [ $isp_again -gt $again_high_target ]; then
-        echo -e -n "Low light : night mode should be ON (ISP_AGAIN : $isp_again > $again_high_target)\t"
-    elif [ $isp_again -lt $again_low_target ]; then
-        echo -e -n "High light : night mode should be OFF (ISP_AGAIN : $isp_again < $again_low_target)\t"
-    else
-        echo -e -n "ISP_AGAIN : $isp_again\t\t\t\t"
-    fi
-
-    [[ -f $pid_file_night ]] && grep -q '^1$' $pid_file_night && echo -e -n "Night mode : 1 ($pid_file_night)\t" || echo -e -n "Night mode : 0 ($pid_file_night)\t"
-
-    [ -f "$pid_file_motion" ] && echo -e -n "Motion is ON\t" || echo -e -n "Motion is OFF\t"
-
-    [ $(gpio read ${led_gpio}) -eq 1 ] && echo "LED is ON" || echo "LED is OFF"
-
-    sleep 1
-done
-```
+Monitor ISP_AGAIN, Night Mode, Motion and LEDs using the `check.sh` script
