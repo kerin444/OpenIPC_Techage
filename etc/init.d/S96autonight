@@ -1,0 +1,50 @@
+#!/bin/sh
+DAEMON="/usr/sbin/autonight.sh"
+DAEMON_NAME="Autonight"
+DAEMON_ARGS=""
+DAEMON_PID_FILE=/var/run/autonight.pid
+
+d_start() {
+  printf "Starting $DAEMON_NAME Daemon : "
+  umask 077
+  start-stop-daemon -b -m -S -q -p $DAEMON_PID_FILE --exec /usr/sbin/autonight.sh -- $DAEMON_ARGS
+  [ $? = 0 ] && echo "OK" || echo "FAILED"
+}
+
+d_stop() {
+    printf "Stopping $DAEMON_NAME Daemon : "
+    start-stop-daemon -K -q -R 5 -p $DAEMON_PID_FILE
+    if [ $? = 0 ]; then 
+        echo "OK"
+    else
+        echo "FAILED"
+        killall -I -q $DAEMON_NAME || true
+        sleep 2
+        killall -I -q -9 $DAEMON_NAME || true
+        rm -f $DAEMON_PID_FILE
+        printf "Stopping $DAEMON_NAME Daemon : FORCED"
+    fi
+}
+
+d_restart() {
+  d_stop
+  d_start
+}
+
+case "$1" in
+  start)
+    d_start
+    ;;
+  stop)
+    d_stop
+    ;;
+  restart)
+    d_restart
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit $?
