@@ -1,6 +1,13 @@
 # OpenIPC_Techage
 OpenIPC for Techage cameras (should work with all cameras with LEDs and no Light Sensor)
 
+References:
+
++ [Auto Night Mode Without Light Sensor : from legacy but still usefull as OpenIPC triggers LEDs with Night Mode and not with Motion](https://github.com/OpenIPC/wiki/blob/master/en/auto-night-mode-without-light-sensor.md)
+
++ [Auto DayNight Detection: current way of managing day/night in OpenIPC](https://github.com/OpenIPC/wiki/blob/master/en/majestic-streamer.md#auto-daynight-detection)
+
+
 ## MOTION & AUTONIGHT
 This set of scripts has been made to manage the night mode and turn ON/OFF the LEDs when motion is detected on Techage Cameras that don't have Light Sensor (should work on other cameras).
 
