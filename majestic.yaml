@@ -1,0 +1,97 @@
+system:
+  webPort: 80
+  httpsPort: 443
+  logLevel: info
+  buffer: 1024
+  plugins: false
+  unsafe: false
+isp:
+  antiFlicker: disabled
+  blkCnt: 4
+  dis: false
+  memMode: reduction
+  rawMode: slow
+  sensorConfig: /etc/sensors/sc4236_i2c_3M.ini
+  slowShutter: medium
+image:
+  mirror: false
+  flip: false
+  rotate: 0
+  contrast: 50
+  hue: 50
+  saturation: 50
+  luminance: 50
+video0:
+  enabled: true
+  codec: h264
+  fps: 15
+  bitrate: 4096
+  rcMode: vbr
+  gopSize: 1
+  gopMode: normal
+  profile: main
+  size: 1920x1080
+  sliceUnits: 0
+video1:
+  enabled: true
+  codec: h264
+  size: 1280x720
+  fps: 10
+  bitrate: 1024
+  profile: main
+  rcMode: vbr
+  gopMode: normal
+  sliceUnits: 0
+jpeg:
+  enabled: false
+  qfactor: 50
+  fps: 5
+  osd: true
+  rtsp: false
+  size: 420x320
+osd:
+  enabled: false
+  font: /usr/share/fonts/truetype/UbuntuMono-Regular.ttf
+  template: '%d.%m.%Y %H:%M:%S'
+  posX: 16
+  posY: 16
+audio:
+  enabled: true
+  volume: 100
+  srate: 8000
+  codec: opus
+  outputEnabled: true
+  outputVolume: 76
+  dual: false
+  speakerPinInvert: false
+rtsp:
+  enabled: true
+  port: 554
+nightMode:
+  colorToGray: true
+  irCutSingleInvert: false
+  lightMonitor: false
+  lightSensorInvert: false
+  backlightPin:
+  irCutPin1: 11
+  irCutPin2: 10
+  monitorDelay:
+  maxThreshold:
+  minThreshold:
+motionDetect:
+  enabled: true
+  visualize: true
+  debug: false
+  roi: 11x27x176x927,18x702x1873x363,1679x11x219x715
+records:
+  enabled: false
+  path: /mnt/mmcblk0p1/%F
+  split: 20
+  maxUsage: 95
+outgoing:
+  enabled: false
+watchdog:
+  enabled: true
+  timeout: 300
+hls:
+  enabled: false
