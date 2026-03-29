@@ -41,9 +41,11 @@ Connect the camera to a POE switch and start Putty to connect:
 <img width="455" height="443" alt="image" src="https://github.com/user-attachments/assets/86231b60-28ff-4e6f-ab6d-59e1d0259db6" />
 
 You should see the boot sequence by default:
+
 <img width="579" height="393" alt="image" src="https://github.com/user-attachments/assets/8c071112-3adf-453b-a3fb-d24d590391da" />
 
 Reboot the camera and press CTRL + C to interrupt boot sequence:
+
 [https://github.com/user-attachments/assets/c8230e5d-ee61-4d13-abb5-b181e907b937](https://youtu.be/yRm4S27fPA0)
 
 
