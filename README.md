@@ -3,16 +3,20 @@ OpenIPC for Techage cameras
 
 # Firmware installation
 Remove the 4 front screws to open the cameras:
+
 <img width="858" height="753" alt="Camera front view" src="https://github.com/user-attachments/assets/7b0dbf2e-cfa1-4973-8a99-9e7d72d0ff43" />
 
 Connect the UART adapter to the camera PCB:
+
 <img width="686" height="884" alt="UART Adapter" src="https://github.com/user-attachments/assets/06279e81-301f-438c-9539-2653de988052" />
+
 <img width="1281" height="859" alt="Camera PCB" src="https://github.com/user-attachments/assets/1362082e-a494-43d5-aa13-90fcb7a4a163" />
 
 Download Portable release of TFTPd64 server for Windows:
 https://github.com/PJO2/tftpd64/releases/
 
 Create a directory to use as the TFTPd root directory:
+
 <img width="667" height="470" alt="image" src="https://github.com/user-attachments/assets/a520d207-9fb4-4bd6-8243-99aa0ed14494" />
 
 Techage is based on HiSilicon 3516 v300 chipset with 8m flash size and ethernet port only.
@@ -24,10 +28,12 @@ Direct Download link:
 https://openipc.org/cameras/vendors/hisilicon/socs/hi3516ev300/download_full_image?flash_size=8&flash_type=nor&fw_release=lite
 
 Put the firmware BIN file in the TFTPd root directory:
+
 <img width="901" height="246" alt="image" src="https://github.com/user-attachments/assets/32fb3c8b-b937-46c5-8e49-a76a8d869851" />
 
 
 Connect the camera to a POE switch and start Putty to connect:
+
 <img width="372" height="772" alt="image" src="https://github.com/user-attachments/assets/28c73e96-7c80-4146-af47-04b5650e7e1e" />
 
 <img width="455" height="442" alt="image" src="https://github.com/user-attachments/assets/3ce9d85f-0c15-4a86-a0a4-6a5221904556" />
