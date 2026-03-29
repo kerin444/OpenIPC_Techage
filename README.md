@@ -46,7 +46,8 @@ You should see the boot sequence by default:
 
 Reboot the camera and press CTRL + C to interrupt boot sequence:
 
-[https://github.com/user-attachments/assets/c8230e5d-ee61-4d13-abb5-b181e907b937](https://youtu.be/yRm4S27fPA0)
+https://youtu.be/yRm4S27fPA0
+
 
 
 
