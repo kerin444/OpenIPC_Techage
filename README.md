@@ -61,10 +61,26 @@ Reboot the camera and press CTRL + C to interrupt boot sequence:
 # sf erase 0x0 0x800000; sf write 0x42000000 0x0 0x800000
 # reset
 ```
-Check DHCP
-Login via http://<<DHCP IP>>/ with root/12345
+Camera will restart in DHCP mode.
+
+Check DHCP to retrieve the new IP or get the IP from the boot logs:
+
+<img width="584" height="394" alt="image" src="https://github.com/user-attachments/assets/0b4fdf08-2aea-4312-af83-eaf30491306a" />
+
+
+Go to the web interface via http://<<DHCP IP>>/ and log with `root/12345`
+
 Change password
-Change MAC address to match previous MAC if needed
+
+<img width="1158" height="699" alt="image" src="https://github.com/user-attachments/assets/f64328ef-6843-41b9-bd1a-0d80042eece4" />
+
+Apply and log agin with new password. Change MAC address to match previous MAC if needed
+
+<img width="1156" height="801" alt="image" src="https://github.com/user-attachments/assets/5dcc2414-a899-4c61-8217-696a6ec60722" />
+
+Restart camera and log again (check your new IP in DHCP).
+
+
 Firmware -> Network
 	Change Hostname
 Firmware -> Time
